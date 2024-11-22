@@ -27,10 +27,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y cmake gcc-riscv64-unknown-elf libelf-dev libsigc++-2.0-dev libboost-dev libboost-program-options-dev qt6-base-dev libglx-dev libgl1-mesa-dev
+      # - name: Install dependencies
+      #   run: |
+      #     sudo apt-get update -y
+      #     sudo apt-get install -y cmake gcc-riscv64-unknown-elf libelf-dev libsigc++-2.0-dev libboost-dev libboost-program-options-dev qt6-base-dev libglx-dev libgl1-mesa-dev
       - name: Create .deb
         run: |
           mkdir build
