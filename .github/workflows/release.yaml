@@ -22,6 +22,24 @@ jobs:
         with:
           name: build-ubuntu
           path: build/*.deb
+  build-debian-arm:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install cmake gcc-riscv64-unknown-elf libelf-dev libsigc++-2.0-dev libboost-dev libboost-program-options-dev qt6-base-dev libglx-dev libgl1-mesa-dev
+      - name: Create .deb
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          cpack -G DEB
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-debian-arm
   build-debian:
     runs-on: ubuntu-latest
     container: 'debian:latest'
@@ -63,7 +81,7 @@ jobs:
           name: build-fedora
           path: build/*.rpm
   publish:
-    needs: [build-ubuntu, build-debian, build-fedora]
+    needs: [build-ubuntu, build-debian, build-fedora, build-debian-arm]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     env:
@@ -75,4 +93,4 @@ jobs:
       - name: Create release
         run: |
           gh release delete latest --cleanup-tag --yes || true
-          gh release create latest --title "Latest release" --notes "Only Debian stable is officially supported" build-ubuntu/* build-debian/* build-fedora/*
+          gh release create latest --title "Latest release" --notes "Only Debian stable is officially supported" build-ubuntu/* build-debian/* build-fedora/* build-debian-arm/*
